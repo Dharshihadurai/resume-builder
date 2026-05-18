@@ -1,0 +1,18 @@
+.dashboard { max-width: 1100px; margin: 0 auto; padding: 36px 24px; }
+.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+.dashboard-header h1 { font-size: 26px; font-weight: 700; }
+.dashboard-header p { color: #64748b; font-size: 14px; margin-top: 4px; }
+.loading { text-align: center; padding: 60px; color: #64748b; font-size: 16px; }
+.empty-state { text-align: center; padding: 60px 40px; max-width: 440px; margin: 0 auto; }
+.empty-icon { font-size: 56px; margin-bottom: 16px; }
+.empty-state h2 { font-size: 20px; margin-bottom: 8px; }
+.empty-state p { color: #64748b; font-size: 14px; }
+.resume-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+.resume-card { transition: transform 0.2s, box-shadow 0.2s; }
+.resume-card:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+.resume-card-top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 16px; }
+.resume-icon { font-size: 32px; }
+.resume-card-top h3 { font-size: 16px; font-weight: 600; }
+.resume-name { color: #64748b; font-size: 13px; margin-top: 2px; }
+.resume-date { color: #94a3b8; font-size: 12px; margin-top: 4px; }
+.resume-card-actions { display: flex; gap: 8px; border-top: 1px solid #f1f5f9; padding-top: 14px; }

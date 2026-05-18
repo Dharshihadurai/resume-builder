@@ -1,0 +1,26 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', sans-serif; background: #f8fafc; color: #1e293b; }
+button { cursor: pointer; font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+a { text-decoration: none; color: inherit; }
+
+.btn { padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+.btn-primary { background: #2563eb; color: white; }
+.btn-primary:hover { background: #1d4ed8; }
+.btn-danger { background: #ef4444; color: white; }
+.btn-danger:hover { background: #dc2626; }
+.btn-outline { background: transparent; border: 2px solid #2563eb; color: #2563eb; }
+.btn-outline:hover { background: #2563eb; color: white; }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+
+.card { background: white; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); padding: 24px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; color: #374151; }
+.form-group input, .form-group textarea, .form-group select {
+  width: 100%; padding: 10px 14px; border: 1.5px solid #e2e8f0; border-radius: 8px;
+  font-size: 14px; transition: border 0.2s; background: #f8fafc;
+}
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: #2563eb; background: white; }
+.form-group textarea { min-height: 90px; resize: vertical; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.error { color: #ef4444; font-size: 13px; margin-top: 4px; }
