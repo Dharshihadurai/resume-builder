@@ -10,7 +10,10 @@ const resumeRoutes = require('./routes/resume');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: "https://resume-builder-two-beige.vercel.app",
+  credentials: true
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 
