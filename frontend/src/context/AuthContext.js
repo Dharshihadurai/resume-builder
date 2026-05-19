@@ -1,5 +1,8 @@
+
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+const API = "https://resume-builder-fkrj.onrender.com";
+
 
 const AuthContext = createContext();
 export const useAuth = () => useContext(AuthContext);
@@ -19,7 +22,7 @@ export const AuthProvider = ({ children }) => {
   }, [token]);
 
   const login = async (email, password) => {
-    const { data } = await axios.post('/api/auth/login', { email, password });
+    const { data } = await axios.post(`${API}/api/auth/login`, { email, password });
     setToken(data.token);
     setUser(data.user);
     localStorage.setItem('token', data.token);
@@ -28,7 +31,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (name, email, password) => {
-    const { data } = await axios.post('/api/auth/register', { name, email, password });
+    const { data } = await axios.post(`${API}/api/auth/register`, { name, email, password });
     setToken(data.token);
     setUser(data.user);
     localStorage.setItem('token', data.token);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Dashboard.css';
+const API = "https://resume-builder-fkrj.onrender.com";
 
 export default function Dashboard() {
   const [resumes, setResumes] = useState([]);
@@ -9,12 +10,12 @@ export default function Dashboard() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('/api/resumes').then(r => { setResumes(r.data); setLoading(false); });
+   axios.get(`${API}/api/resumes`).then(r => { setResumes(r.data); setLoading(false); });
   }, []);
 
   const deleteResume = async (id) => {
     if (!window.confirm('Delete this resume?')) return;
-    await axios.delete(`/api/resumes/${id}`);
+    await axios.delete(`${API}/api/resumes/${id}`);
     setResumes(resumes.filter(r => r._id !== id));
   };
 
