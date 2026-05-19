@@ -1,8 +1,10 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import ResumePreview from '../components/ResumePreview';
 import './ResumeBuilder.css';
+const API = "https://resume-builder-fkrj.onrender.com";
 
 const EMPTY = {
   title: 'My Resume',
@@ -24,7 +26,7 @@ export default function ResumeBuilder() {
 
   useEffect(() => {
     if (id) {
-      axios.get(`/api/resumes/${id}`).then(r => setData(r.data));
+      axios.get(`${API}/api/resumes/${id}`).then(r => setData(r.data));
     }
   }, [id]);
 
@@ -34,8 +36,8 @@ export default function ResumeBuilder() {
   const save = async () => {
     setSaving(true);
     try {
-      if (id) { await axios.put(`/api/resumes/${id}`, data); }
-      else { const r = await axios.post('/api/resumes', data); navigate(`/builder/${r.data._id}`, { replace: true }); }
+      if (id) { await axios.put(`${API}/api/resumes/${id}`, data); }
+      else { const r = await axios.post(`${API}/api/resumes`, data); navigate(`/builder/${r.data._id}`, { replace: true }); }
       setSaved(true); setTimeout(() => setSaved(false), 2000);
     } finally { setSaving(false); }
   };
