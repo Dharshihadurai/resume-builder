@@ -11,7 +11,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: "https://resume-builder-two-beige.vercel.app",
+origin: "https://resume.dharshiha.xyz",
   credentials: true
 }));
 app.use(express.json());
