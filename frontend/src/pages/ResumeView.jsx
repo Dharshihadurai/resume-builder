@@ -4,21 +4,39 @@ import { useParams } from "react-router-dom";
 const ResumeView = () => {
   const { id } = useParams();
   const [resume, setResume] = useState(null);
-useEffect(() => {
-  console.log("Resume ID:", id);
+  const [error, setError] = useState("");
 
-  fetch(`https://resume-builder-fkrj.onrender.com/api/resumes/${id}`)
-    .then(res => {
-      console.log("Status:", res.status);
-      return res.json();
-    })
-    .then(data => {
-      console.log("API DATA:", data);
-      setResume(data);
-    })
-    .catch(err => console.log("Error:", err));
+  useEffect(() => {
+    const token = localStorage.getItem("token");
 
-}, [id]);
+    fetch(`https://resume-builder-fkrj.onrender.com/api/resumes/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+      .then(async (res) => {
+        const data = await res.json();
+
+        console.log("STATUS:", res.status);
+        console.log("API DATA:", data);
+
+        if (!res.ok) {
+          throw new Error(data.message || "Failed to load resume");
+        }
+
+        return data;
+      })
+      .then((data) => {
+        setResume(data);
+      })
+      .catch((err) => {
+        console.error(err.message);
+        setError(err.message);
+      });
+  }, [id]);
+
+  if (error) return <p style={{ color: "red" }}>{error}</p>;
+
   if (!resume) return <p>Loading...</p>;
 
   return (
