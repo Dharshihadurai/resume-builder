@@ -33,22 +33,33 @@ export default function ResumeBuilder() {
   const [saved, setSaved] = useState(false);
   const printRef = useRef();
 
-  // Load resume
-  useEffect(() => {
-    if (id) {
-      axios.get(`${API}/api/resumes/${id}`).then(r => {
-        setData({
-          ...EMPTY,
-          ...r.data,
-          personalInfo: { ...EMPTY.personalInfo, ...(r.data.personalInfo || {}) },
-          experience: r.data.experience || [],
-          education: r.data.education || [],
-          skills: r.data.skills || [],
-          projects: r.data.projects || []
-        });
+ useEffect(() => {
+  if (id) {
+    const token = localStorage.getItem("token");
+
+    axios.get(`${API}/api/resumes/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(r => {
+      const res = r.data;
+
+      setData({
+        ...EMPTY,
+        ...res,
+        personalInfo: {
+          ...EMPTY.personalInfo,
+          ...(res.personalInfo || {})
+        },
+        experience: res.experience || [],
+        education: res.education || [],
+        skills: res.skills || [],
+        projects: res.projects || []
       });
-    }
-  }, [id]);
+    });
+  }
+}, [id]);
 
   const updatePersonal = (field, val) =>
     setData(d => ({
