@@ -66,13 +66,20 @@ export default function ResumeBuilder() {
     setSaving(true);
     try {
       const token = localStorage.getItem("token");
+
+      // Strip frontend-only fields (_id, startDate, endDate) that MongoDB schema doesn't have
+      const cleanExperience = (data.experience || []).map(({ _id, startDate, endDate, ...rest }) => rest);
+      const cleanEducation = (data.education || []).map(({ _id, startDate, endDate, ...rest }) => rest);
+      const cleanSkills = (data.skills || []).map(({ _id, ...rest }) => rest);
+      const cleanProjects = (data.projects || []).map(({ _id, ...rest }) => rest);
+
       const payload = {
         title: data.title,
         personalInfo: data.personalInfo,
-        experience: data.experience || [],
-        education: data.education || [],
-        skills: data.skills || [],
-        projects: data.projects || []
+        experience: cleanExperience,
+        education: cleanEducation,
+        skills: cleanSkills,
+        projects: cleanProjects
       };
       const config = {
         headers: {
@@ -187,8 +194,6 @@ export default function ResumeBuilder() {
                 addItem('experience', {
                   company: '',
                   position: '',
-                  startDate: '',
-                  endDate: '',
                   description: ''
                 })
               }>
@@ -207,18 +212,6 @@ export default function ResumeBuilder() {
                     onChange={e => updateItem('experience', i, 'position', e.target.value)}
                     placeholder="Position / Title"
                   />
-                  <div className="date-row">
-                    <input
-                      value={exp.startDate || ''}
-                      onChange={e => updateItem('experience', i, 'startDate', e.target.value)}
-                      placeholder="Start Date (e.g. Jan 2022)"
-                    />
-                    <input
-                      value={exp.endDate || ''}
-                      onChange={e => updateItem('experience', i, 'endDate', e.target.value)}
-                      placeholder="End Date (or Present)"
-                    />
-                  </div>
                   <textarea
                     value={exp.description || ''}
                     onChange={e => updateItem('experience', i, 'description', e.target.value)}
@@ -240,9 +233,7 @@ export default function ResumeBuilder() {
                 addItem('education', {
                   institution: '',
                   degree: '',
-                  field: '',
-                  startDate: '',
-                  endDate: ''
+                  field: ''
                 })
               }>
                 + Add Education
@@ -265,18 +256,6 @@ export default function ResumeBuilder() {
                     onChange={e => updateItem('education', i, 'field', e.target.value)}
                     placeholder="Field of Study"
                   />
-                  <div className="date-row">
-                    <input
-                      value={edu.startDate || ''}
-                      onChange={e => updateItem('education', i, 'startDate', e.target.value)}
-                      placeholder="Start Year"
-                    />
-                    <input
-                      value={edu.endDate || ''}
-                      onChange={e => updateItem('education', i, 'endDate', e.target.value)}
-                      placeholder="End Year"
-                    />
-                  </div>
                   <button className="remove-btn" onClick={() => removeItem('education', i)}>
                     Remove
                   </button>
