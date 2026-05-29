@@ -6,11 +6,11 @@ const ResumeView = () => {
   const [resume, setResume] = useState(null);
 
   useEffect(() => {
-    // TODO: replace with your API call
-    fetch(`http://localhost:5000/api/resume/${id}`)
-      .then(res => res.json())
-      .then(data => setResume(data));
-  }, [id]);
+  fetch(`https://resume-builder-fkrj.onrender.com/api/resume/${id}`)
+    .then(res => res.json())
+    .then(data => setResume(data))
+    .catch(err => console.log("Error:", err));
+}, [id]);
 
   if (!resume) return <p>Loading...</p>;
 
