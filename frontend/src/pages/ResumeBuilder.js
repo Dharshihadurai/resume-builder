@@ -72,33 +72,43 @@ export default function ResumeBuilder() {
 
   // ✅ FIXED SAVE FUNCTION
   const save = async () => {
-    setSaving(true);
-    try {
-      const payload = {
-        title: data.title,
-        personalInfo: data.personalInfo,
-        experience: data.experience || [],
-        education: data.education || [],
-        skills: data.skills || [],
-        projects: data.projects || []
-      };
+  setSaving(true);
 
-      if (id) {
-        await axios.put(`${API}/api/resumes/${id}`, payload);
-      } else {
-        const r = await axios.post(`${API}/api/resumes`, payload);
-        navigate(`/resume/${r.data._id}`, { replace: true });
+  try {
+    const token = localStorage.getItem("token");
+
+    const payload = {
+      title: data.title,
+      personalInfo: data.personalInfo,
+      experience: data.experience || [],
+      education: data.education || [],
+      skills: data.skills || [],
+      projects: data.projects || []
+    };
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
       }
+    };
 
-      setSaved(true);
-      setTimeout(() => setSaved(false), 2000);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setSaving(false);
+    if (id) {
+      await axios.put(`${API}/api/resumes/${id}`, payload, config);
+    } else {
+      const r = await axios.post(`${API}/api/resumes`, payload, config);
+      navigate(`/resume/${r.data._id}`, { replace: true });
     }
-  };
 
+    setSaved(true);
+    setTimeout(() => setSaved(false), 2000);
+
+  } catch (err) {
+    console.log("SAVE ERROR:", err.response?.data || err.message);
+  } finally {
+    setSaving(false);
+  }
+};
   const addItem = (section, template) =>
     setData(d => ({
       ...d,
