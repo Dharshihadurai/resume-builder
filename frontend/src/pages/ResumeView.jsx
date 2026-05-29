@@ -4,14 +4,21 @@ import { useParams } from "react-router-dom";
 const ResumeView = () => {
   const { id } = useParams();
   const [resume, setResume] = useState(null);
+useEffect(() => {
+  console.log("Resume ID:", id);
 
-  useEffect(() => {
-  fetch(`https://resume-builder-fkrj.onrender.com/api/resume/${id}`)
-    .then(res => res.json())
-    .then(data => setResume(data))
+  fetch(`https://resume-builder-fkrj.onrender.com/api/resumes/${id}`)
+    .then(res => {
+      console.log("Status:", res.status);
+      return res.json();
+    })
+    .then(data => {
+      console.log("API DATA:", data);
+      setResume(data);
+    })
     .catch(err => console.log("Error:", err));
-}, [id]);
 
+}, [id]);
   if (!resume) return <p>Loading...</p>;
 
   return (
