@@ -44,7 +44,7 @@ const ResumeView = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <h1>{resume.personalInfo?.name}</h1>
+      <h1>{resume.personalInfo?.fullName}</h1>
       <h3>{resume.personalInfo?.email}</h3>
 
       <hr />
@@ -52,7 +52,11 @@ const ResumeView = () => {
       <h2>Experience</h2>
       {resume.experience?.length > 0 ? (
         resume.experience.map((item, index) => (
-          <p key={index}>{item}</p>
+          <div key={index}>
+            <h4>{item.company}</h4>
+            <p>{item.position}</p>
+            <p>{item.description}</p>
+          </div>
         ))
       ) : (
         <p>No experience added</p>
@@ -61,7 +65,11 @@ const ResumeView = () => {
       <h2>Education</h2>
       {resume.education?.length > 0 ? (
         resume.education.map((item, index) => (
-          <p key={index}>{item}</p>
+          <div key={index}>
+            <h4>{item.institution}</h4>
+            <p>{item.degree}</p>
+            <p>{item.field}</p>
+          </div>
         ))
       ) : (
         <p>No education added</p>
