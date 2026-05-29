@@ -5,35 +5,36 @@ const ResumeView = () => {
   const { id } = useParams();
   const [resume, setResume] = useState(null);
   const [error, setError] = useState("");
+useEffect(() => {
+  const token = localStorage.getItem("token");
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
+  fetch(`https://resume-builder-fkrj.onrender.com/api/resumes/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    }
+  })
+    .then(async (res) => {
+      const data = await res.json();
 
-    fetch(`https://resume-builder-fkrj.onrender.com/api/resumes/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
+      console.log("STATUS:", res.status);
+      console.log("API DATA:", data);
+
+      if (!res.ok) {
+        throw new Error(data.message || "Unauthorized / API error");
       }
+
+      return data;
     })
-      .then(async (res) => {
-        const data = await res.json();
+    .then((data) => {
+      setResume(data);
+    })
+    .catch((err) => {
+      console.error("Error:", err.message);
+    });
 
-        console.log("STATUS:", res.status);
-        console.log("API DATA:", data);
-
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to load resume");
-        }
-
-        return data;
-      })
-      .then((data) => {
-        setResume(data);
-      })
-      .catch((err) => {
-        console.error(err.message);
-        setError(err.message);
-      });
-  }, [id]);
+}, [id]);
 
   if (error) return <p style={{ color: "red" }}>{error}</p>;
 
