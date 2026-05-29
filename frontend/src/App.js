@@ -6,6 +6,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ResumeBuilder from './pages/ResumeBuilder';
 import Navbar from './components/Navbar';
+import ResumeView from './pages/ResumeView';
 
 const PrivateRoute = ({ children }) => {
   const { user } = useAuth();
@@ -29,6 +30,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
         <Route path="/builder" element={<PrivateRoute><ResumeBuilder /></PrivateRoute>} />
         <Route path="/builder/:id" element={<PrivateRoute><ResumeBuilder /></PrivateRoute>} />
+        <Route path="/resume/:id" element={<PrivateRoute><ResumeView /></PrivateRoute>} />
       </Routes>
     </>
   );
