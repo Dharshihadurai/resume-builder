@@ -33,33 +33,33 @@ export default function ResumeBuilder() {
   const [saved, setSaved] = useState(false);
   const printRef = useRef();
 
- useEffect(() => {
-  if (id) {
-    const token = localStorage.getItem("token");
+  // LOAD DATA
+  useEffect(() => {
+    if (id) {
+      const token = localStorage.getItem("token");
 
-    axios.get(`${API}/api/resumes/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    })
-    .then(r => {
-      const res = r.data;
+      axios.get(`${API}/api/resumes/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).then(r => {
+        const res = r.data;
 
-      setData({
-        ...EMPTY,
-        ...res,
-        personalInfo: {
-          ...EMPTY.personalInfo,
-          ...(res.personalInfo || {})
-        },
-        experience: res.experience || [],
-        education: res.education || [],
-        skills: res.skills || [],
-        projects: res.projects || []
+        setData({
+          ...EMPTY,
+          ...res,
+          personalInfo: {
+            ...EMPTY.personalInfo,
+            ...(res.personalInfo || {})
+          },
+          experience: res.experience || [],
+          education: res.education || [],
+          skills: res.skills || [],
+          projects: res.projects || []
+        });
       });
-    });
-  }
-}, [id]);
+    }
+  }, [id]);
 
   const updatePersonal = (field, val) =>
     setData(d => ({
@@ -70,45 +70,63 @@ export default function ResumeBuilder() {
       }
     }));
 
-  // ✅ FIXED SAVE FUNCTION
+  // ✅ SAVE FUNCTION (FIXED + REFRESH)
   const save = async () => {
-  setSaving(true);
+    setSaving(true);
 
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const payload = {
-      title: data.title,
-      personalInfo: data.personalInfo,
-      experience: data.experience || [],
-      education: data.education || [],
-      skills: data.skills || [],
-      projects: data.projects || []
-    };
+      const payload = {
+        title: data.title,
+        personalInfo: data.personalInfo,
+        experience: data.experience || [],
+        education: data.education || [],
+        skills: data.skills || [],
+        projects: data.projects || []
+      };
 
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      };
+
+      if (id) {
+        await axios.put(`${API}/api/resumes/${id}`, payload, config);
+
+        // 🔥 REFRESH AFTER SAVE
+        const updated = await axios.get(`${API}/api/resumes/${id}`, config);
+
+        setData({
+          ...EMPTY,
+          ...updated.data,
+          personalInfo: {
+            ...EMPTY.personalInfo,
+            ...(updated.data.personalInfo || {})
+          },
+          experience: updated.data.experience || [],
+          education: updated.data.education || [],
+          skills: updated.data.skills || [],
+          projects: updated.data.projects || []
+        });
+
+      } else {
+        const r = await axios.post(`${API}/api/resumes`, payload, config);
+        navigate(`/resume/${r.data._id}`, { replace: true });
       }
-    };
 
-    if (id) {
-      await axios.put(`${API}/api/resumes/${id}`, payload, config);
-    } else {
-      const r = await axios.post(`${API}/api/resumes`, payload, config);
-      navigate(`/resume/${r.data._id}`, { replace: true });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 2000);
+
+    } catch (err) {
+      console.log("SAVE ERROR:", err.response?.data || err.message);
+    } finally {
+      setSaving(false);
     }
+  };
 
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
-
-  } catch (err) {
-    console.log("SAVE ERROR:", err.response?.data || err.message);
-  } finally {
-    setSaving(false);
-  }
-};
   const addItem = (section, template) =>
     setData(d => ({
       ...d,
@@ -135,7 +153,9 @@ export default function ResumeBuilder() {
 
   return (
     <div className="builder-layout">
+
       <div className="builder-panel">
+
         <div className="builder-top">
           <input
             className="title-input"
@@ -144,16 +164,12 @@ export default function ResumeBuilder() {
           />
 
           <div className="builder-actions">
-            <button className="btn btn-outline btn-sm" onClick={handlePrint}>
+            <button onClick={handlePrint}>
               🖨️ Print
             </button>
 
-            <button
-              className="btn btn-primary btn-sm"
-              onClick={save}
-              disabled={saving}
-            >
-              {saving ? 'Saving...' : saved ? '✓ Saved' : 'Save'}
+            <button onClick={save} disabled={saving}>
+              {saving ? "Saving..." : saved ? "✓ Saved" : "Save"}
             </button>
           </div>
         </div>
@@ -162,15 +178,17 @@ export default function ResumeBuilder() {
           {TABS.map(t => (
             <button
               key={t}
-              className={`tab ${activeTab === t ? 'active' : ''}`}
+              className={activeTab === t ? "active" : ""}
               onClick={() => setActiveTab(t)}
             >
-              {t.charAt(0).toUpperCase() + t.slice(1)}
+              {t}
             </button>
           ))}
         </div>
 
         <div className="section-content">
+
+          {/* PERSONAL */}
           {activeTab === 'personal' && (
             <div>
               <h3>Personal Information</h3>
@@ -182,7 +200,6 @@ export default function ResumeBuilder() {
                   placeholder={f}
                 />
               ))}
-
               <textarea
                 value={data.personalInfo.summary}
                 onChange={e => updatePersonal('summary', e.target.value)}
@@ -191,14 +208,13 @@ export default function ResumeBuilder() {
             </div>
           )}
 
+          {/* EXPERIENCE */}
           {activeTab === 'experience' && (
             <div>
               <button onClick={() =>
                 addItem('experience', {
                   company: '',
                   position: '',
-                  startDate: '',
-                  endDate: '',
                   description: ''
                 })
               }>
@@ -228,6 +244,7 @@ export default function ResumeBuilder() {
             </div>
           )}
 
+          {/* EDUCATION */}
           {activeTab === 'education' && (
             <div>
               <button onClick={() =>
@@ -263,6 +280,7 @@ export default function ResumeBuilder() {
             </div>
           )}
 
+          {/* SKILLS */}
           {activeTab === 'skills' && (
             <div>
               <button onClick={() =>
@@ -283,6 +301,7 @@ export default function ResumeBuilder() {
             </div>
           )}
 
+          {/* PROJECTS */}
           {activeTab === 'projects' && (
             <div>
               <button onClick={() =>
@@ -307,12 +326,14 @@ export default function ResumeBuilder() {
               ))}
             </div>
           )}
+
         </div>
       </div>
 
       <div className="preview-panel" ref={printRef}>
         <ResumePreview data={data} />
       </div>
+
     </div>
   );
 }
