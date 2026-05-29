@@ -37,7 +37,7 @@ export default function ResumeBuilder() {
     setSaving(true);
     try {
       if (id) { await axios.put(`${API}/api/resumes/${id}`, data); }
-      else { const r = await axios.post(`${API}/api/resumes`, data); navigate(`/builder/${r.data._id}`, { replace: true }); }
+      else { const r = await axios.post(`${API}/api/resumes`, data); navigate(`/resume/${r.data._id}`, { replace: true }); }
       setSaved(true); setTimeout(() => setSaved(false), 2000);
     } finally { setSaving(false); }
   };
